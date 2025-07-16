@@ -36,6 +36,7 @@ export class MentionListComponent implements AfterContentChecked {
   @Input() itemTemplate: TemplateRef<any>;
   @Input() listAriaLabel: string;
   @Output() itemClick = new EventEmitter();
+  @Output() itemActivated = new EventEmitter(true);
   @ViewChild('list', { static: true }) list: ElementRef;
   @ViewChild('defaultItemTemplate', { static: true }) defaultItemTemplate: TemplateRef<any>;
   items = [];
@@ -86,6 +87,7 @@ export class MentionListComponent implements AfterContentChecked {
   }
 
   activateNextItem() {
+    this.itemActivated.emit();
     // adjust scrollable-menu offset if the next item is out of view
     let listEl: HTMLElement = this.list.nativeElement;
     let activeEl = listEl.getElementsByClassName('active').item(0);
@@ -103,6 +105,7 @@ export class MentionListComponent implements AfterContentChecked {
   }
 
   activatePreviousItem() {
+    this.itemActivated.emit();
     // adjust the scrollable-menu offset if the previous item is out of view
     let listEl: HTMLElement = this.list.nativeElement;
     let activeEl = listEl.getElementsByClassName('active').item(0);

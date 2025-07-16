@@ -1,6 +1,6 @@
 import { Directive, ElementRef, TemplateRef, ViewContainerRef } from "@angular/core";
 import { EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
-import { getCaretPosition, getValue, insertValue, setCaretPosition } from './mention-utils';
+import { getCaretPosition, getValue, insertValue, setAriaActiveDescendant, setCaretPosition } from './mention-utils';
 
 import { MentionConfig } from "./mention-config";
 import { MentionListComponent } from './mention-list.component';
@@ -351,6 +351,9 @@ export class MentionDirective implements OnChanges {
     if (this.searchList) {
       this.searchList.items = matches;
       this.searchList.hidden = matches.length == 0;
+      setTimeout(() => {
+          setAriaActiveDescendant(this._element.nativeElement, this.searchList.list.nativeElement);
+      }, 50);
     }
   }
 
@@ -366,6 +369,9 @@ export class MentionDirective implements OnChanges {
         nativeElement.focus();
         let fakeKeydown = { key: 'Enter', keyCode: KEY_ENTER, wasClick: true };
         this.keyHandler(fakeKeydown, nativeElement);
+      });
+      componentRef.instance['itemActivated'].subscribe(() => {
+        setAriaActiveDescendant(nativeElement, this.searchList.list.nativeElement);
       });
     }
     this.searchList.labelKey = this.activeConfig.labelKey;
