@@ -159,6 +159,9 @@ function localToRelativeCoordinates(ctx, element, coordinates) {
         }
     }
 }
+function setAriaActiveDescendant(nativeElement, list) {
+    nativeElement.ariaActiveDescendantElement = list.querySelector('[aria-selected="true"]');
+}
 
 /* From: https://github.com/component/textarea-caret-position */
 /* jshint browser: true */
@@ -337,6 +340,7 @@ class MentionListComponent {
         this.element = element;
         this.labelKey = 'label';
         this.itemClick = new EventEmitter();
+        this.itemActivated = new EventEmitter(true);
         this.items = [];
         this.activeIndex = 0;
         this.hidden = false;
@@ -381,6 +385,7 @@ class MentionListComponent {
         return this.items[this.activeIndex];
     }
     activateNextItem() {
+        this.itemActivated.emit();
         // adjust scrollable-menu offset if the next item is out of view
         let listEl = this.list.nativeElement;
         let activeEl = listEl.getElementsByClassName('active').item(0);
@@ -397,6 +402,7 @@ class MentionListComponent {
         this.activeIndex = Math.max(Math.min(this.activeIndex + 1, this.items.length - 1), 0);
     }
     activatePreviousItem() {
+        this.itemActivated.emit();
         // adjust the scrollable-menu offset if the previous item is out of view
         let listEl = this.list.nativeElement;
         let activeEl = listEl.getElementsByClassName('active').item(0);
@@ -460,7 +466,7 @@ class MentionListComponent {
             let _t;
             i0.ɵɵqueryRefresh(_t = i0.ɵɵloadQuery()) && (ctx.list = _t.first);
             i0.ɵɵqueryRefresh(_t = i0.ɵɵloadQuery()) && (ctx.defaultItemTemplate = _t.first);
-        } }, inputs: { labelKey: "labelKey", itemTemplate: "itemTemplate", listAriaLabel: "listAriaLabel" }, outputs: { itemClick: "itemClick" }, standalone: false, decls: 5, vars: 7, consts: [["defaultItemTemplate", ""], ["list", ""], ["role", "listbox", 1, "dropdown-menu", "scrollable-menu", 3, "hidden"], ["role", "option", "tabindex", "-1", 3, "active", "mention-active", 4, "ngFor", "ngForOf"], ["role", "option", "tabindex", "-1"], [1, "dropdown-item", 3, "mousedown"], [3, "ngTemplateOutlet", "ngTemplateOutletContext"]], template: function MentionListComponent_Template(rf, ctx) { if (rf & 1) {
+        } }, inputs: { labelKey: "labelKey", itemTemplate: "itemTemplate", listAriaLabel: "listAriaLabel" }, outputs: { itemClick: "itemClick", itemActivated: "itemActivated" }, standalone: false, decls: 5, vars: 7, consts: [["defaultItemTemplate", ""], ["list", ""], ["role", "listbox", 1, "dropdown-menu", "scrollable-menu", 3, "hidden"], ["role", "option", "tabindex", "-1", 3, "active", "mention-active", 4, "ngFor", "ngForOf"], ["role", "option", "tabindex", "-1"], [1, "dropdown-item", 3, "mousedown"], [3, "ngTemplateOutlet", "ngTemplateOutletContext"]], template: function MentionListComponent_Template(rf, ctx) { if (rf & 1) {
             i0.ɵɵtemplate(0, MentionListComponent_ng_template_0_Template, 1, 1, "ng-template", null, 0, i0.ɵɵtemplateRefExtractor);
             i0.ɵɵelementStart(2, "ul", 2, 1);
             i0.ɵɵtemplate(4, MentionListComponent_li_4_Template, 3, 11, "li", 3);
@@ -498,6 +504,8 @@ class MentionListComponent {
         }], listAriaLabel: [{
             type: Input
         }], itemClick: [{
+            type: Output
+        }], itemActivated: [{
             type: Output
         }], list: [{
             type: ViewChild,
@@ -799,6 +807,9 @@ class MentionDirective {
         if (this.searchList) {
             this.searchList.items = matches;
             this.searchList.hidden = matches.length == 0;
+            setTimeout(() => {
+                setAriaActiveDescendant(this._element.nativeElement, this.searchList.list.nativeElement);
+            }, 50);
         }
     }
     showSearchList(nativeElement) {
@@ -812,6 +823,9 @@ class MentionDirective {
                 nativeElement.focus();
                 let fakeKeydown = { key: 'Enter', keyCode: KEY_ENTER, wasClick: true };
                 this.keyHandler(fakeKeydown, nativeElement);
+            });
+            componentRef.instance['itemActivated'].subscribe(() => {
+                setAriaActiveDescendant(nativeElement, this.searchList.list.nativeElement);
             });
         }
         this.searchList.labelKey = this.activeConfig.labelKey;

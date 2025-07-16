@@ -12,6 +12,7 @@ export declare class MentionListComponent implements AfterContentChecked {
     itemTemplate: TemplateRef<any>;
     listAriaLabel: string;
     itemClick: EventEmitter<any>;
+    itemActivated: EventEmitter<any>;
     list: ElementRef;
     defaultItemTemplate: TemplateRef<any>;
     items: any[];
@@ -32,6 +33,6 @@ export declare class MentionListComponent implements AfterContentChecked {
     private positionElement;
     private getBlockCursorDimensions;
     static ɵfac: i0.ɵɵFactoryDeclaration<MentionListComponent, never>;
-    static ɵcmp: i0.ɵɵComponentDeclaration<MentionListComponent, "mention-list", never, { "labelKey": { "alias": "labelKey"; "required": false; }; "itemTemplate": { "alias": "itemTemplate"; "required": false; }; "listAriaLabel": { "alias": "listAriaLabel"; "required": false; }; }, { "itemClick": "itemClick"; }, never, never, false, never>;
+    static ɵcmp: i0.ɵɵComponentDeclaration<MentionListComponent, "mention-list", never, { "labelKey": { "alias": "labelKey"; "required": false; }; "itemTemplate": { "alias": "itemTemplate"; "required": false; }; "listAriaLabel": { "alias": "listAriaLabel"; "required": false; }; }, { "itemClick": "itemClick"; "itemActivated": "itemActivated"; }, never, never, false, never>;
 }
 //# sourceMappingURL=mention-list.component.d.ts.map

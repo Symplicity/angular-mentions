@@ -11,4 +11,5 @@ export declare function getContentEditableCaretCoords(ctx: {
     left: number;
     top: number;
 };
+export declare function setAriaActiveDescendant(nativeElement: any, list: HTMLElement): void;
 //# sourceMappingURL=mention-utils.d.ts.map
